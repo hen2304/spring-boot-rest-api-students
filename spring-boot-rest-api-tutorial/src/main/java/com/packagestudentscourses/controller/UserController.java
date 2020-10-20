@@ -26,8 +26,6 @@ import java.util.Map;
 @RequestMapping("/api/v1")
 public class UserController {
 
-  @Autowired
-  private UserRepository userRepository;
 
   @Autowired
   private StudentRepository studentRepository;
@@ -38,45 +36,26 @@ public class UserController {
   @Autowired
   private CourseRepository courseRepository ;
 
-//  /**
-//   * Get all users list.
-//   *
-//   * @return the list
-//   */
-//  @GetMapping("/users")
-//  public List<User> getAllUsers() {
-//    return (List<User>) userRepository.findAll();
-//  }
-
-//  /**
-//   * Get all users list.
-//   *
-//   * @return the list
-//   */
   @GetMapping("/getStudents")
-  public List<Student> getAllStudents() {
-    List<Student> all = (List<Student>) studentRepository.findAll();
+  public List<StudentEntity> getAllStudents() {
+
+
+    List<StudentEntity> all = (List<StudentEntity>) studentRepository.findAll();
     return all;
   }
 
 
   @GetMapping("/getCourses")
-  public List<Course> getAllCourses() {
-    List<Course> all = (List<Course>) courseRepository.findAll();
+  public List<CourseEntity> getAllCourses() {
+    List<CourseEntity> all = (List<CourseEntity>) courseRepository.findAll();
     return all;
   }
-//
-//  /**
-//   * Gets users by id.
-//   *
-//   * @param userId the user id
-//   * @return the users by id
-//   * @throws ResourceNotFoundException the resource not found exception
-//   */
+
+
   @GetMapping("/getStudentBy/{id}")
-  public ResponseEntity<Student> getStudentById(@PathVariable(value = "id") Long userId)
+  public ResponseEntity<StudentEntity> getStudentById(@PathVariable(value = "id") Long userId)
       throws ResourceNotFoundException {
-    Student user =
+    StudentEntity user =
         studentRepository
             .findById(userId)
             .orElseThrow(() -> new ResourceNotFoundException("Student not found on :: " + userId));
@@ -90,7 +69,7 @@ public class UserController {
    * @return the student
    */
   @PostMapping("/createStudent")
-  public Student createStudent(@Valid @RequestBody Student user) throws ResourceNotFoundException {
+  public StudentEntity createStudent(@Valid @RequestBody StudentEntity user) throws ResourceNotFoundException {
 
     if(studentRepository.findById(user.getId()).isPresent()){
       throw new ResourceNotFoundException("Student already exist on id ( you cant add him again) :: " + user.getId());
@@ -107,7 +86,7 @@ public class UserController {
    * @return lecturer
    */
   @PostMapping("/createLecturer")
-  public Lecturer createLecturer(@Valid @RequestBody Lecturer user) throws ResourceNotFoundException {
+  public LecturerEntity createLecturer(@Valid @RequestBody LecturerEntity user) throws ResourceNotFoundException {
 
 
     if(lecturerRepository.findById(user.getId()).isPresent()){
@@ -126,63 +105,25 @@ public class UserController {
    * @return Course
    */
   @PostMapping("/createCourse")
-  public Course createCourse(@Valid @RequestBody Course course) {
+  public CourseEntity createCourse(@Valid @RequestBody CourseEntity course) {
 
     return courseRepository.save(course);
   }
 
-//  /**
-//   * Create user user.
-//   *
-//   * @param user the user
-//   * @return the user
-//   */
-//  @PostMapping("/users")
-//  public User createUser(@Valid @RequestBody User user) {
-//    return userRepository.save(user);
-//  }
 
-
-
-
-//  /**
-//   * Update user response entity.
-//   *
-//   * @param userId the user id
-//   * @param userDetails the user details
-//   * @return the response entity
-//   * @throws ResourceNotFoundException the resource not found exception
-//   */
-//  @PutMapping("/users/{id}")
-//  public ResponseEntity<User> updateUser(
-//      @PathVariable(value = "id") Long userId, @Valid @RequestBody User userDetails)
-//      throws ResourceNotFoundException {
-//
-//    User user =
-//        userRepository
-//            .findById(userId)
-//            .orElseThrow(() -> new ResourceNotFoundException("User not found on :: " + userId));
-//
-//    user.setEmail(userDetails.getEmail());
-//    user.setLastName(userDetails.getLastName());
-//    user.setFirstName(userDetails.getFirstName());
-//    final User updatedUser = userRepository.save(user);
-//    return ResponseEntity.ok(updatedUser);
-//  }
   @PutMapping("/updateStudent/{id}")
-  public ResponseEntity<Student> updateStudent(
-          @PathVariable(value = "id") Long userId, @Valid @RequestBody Student userDetails)
+  public ResponseEntity<StudentEntity> updateStudent(
+          @PathVariable(value = "id") Long userId, @Valid @RequestBody StudentEntity userDetails)
           throws ResourceNotFoundException {
 
-    Student user =
+    StudentEntity user =
             studentRepository
                     .findById(userId)
                     .orElseThrow(() -> new ResourceNotFoundException("User not found on :: " + userId));
 
-    user.setEmail(userDetails.getEmail());
     user.setLastName(userDetails.getLastName());
     user.setFirstName(userDetails.getFirstName());
-    final Student updatedUser = studentRepository.save(user);
+    final StudentEntity updatedUser = studentRepository.save(user);
     return ResponseEntity.ok(updatedUser);
   }
   /**
@@ -194,7 +135,7 @@ public class UserController {
    */
   @DeleteMapping("/deleteStudentBy/{id}")
   public Map<String, Boolean> deleteUser(@PathVariable(value = "id") Long userId) throws Exception {
-    Student user =
+    StudentEntity user =
         studentRepository
             .findById(userId)
             .orElseThrow(() -> new ResourceNotFoundException("Student not found on :: " + userId));
